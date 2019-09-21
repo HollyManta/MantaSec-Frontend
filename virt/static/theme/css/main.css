@@ -52,7 +52,7 @@ body {
 .app-header-logo-icon {
     height: 32px;
     float: right;
-    padding: 16px;
+    padding-right: 16px;
 }
 .app-header-content {
     background-color: #A7AEB8;
@@ -291,5 +291,17 @@ body {
     }
     .app-inner {
         padding: 30px 30px 0;
+    }
+}
+@media only screen and (max-width: 675px) {
+    .widget-two-third {
+        flex: 0 0 100%;
+        min-width: 100%;
+        padding-top: 10px;
+    }
+    .widget-one-third {
+        flex: 0 0 100%;
+        min-width: 100%;
+        padding-top: 10px;
     }
 }
