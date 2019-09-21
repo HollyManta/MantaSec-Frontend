@@ -3,6 +3,123 @@
 <head>
     <title>MantaSec - Vulnerability Management Platform</title>
     <link href="/static/theme/css/main.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <script src="https://www.chartjs.org/dist/2.8.0/Chart.min.js"></script>
+    <script>
+        'use strict';
+
+window.chartColors = {
+	red: 'rgb(255, 99, 132)',
+	orange: 'rgb(255, 159, 64)',
+	blue: 'rgb(54, 162, 235)',
+};
+
+(function(global) {
+	//var COLORS = [
+	//	'#4dc9f6',
+	//	'#f67019',
+	//	'#f53794',
+	//	'#537bc4',
+	//	'#acc236',
+	//	'#166a8f',
+	//	'#00a950',
+	//	'#58595b',
+	//	'#8549ba'
+	//];
+
+	var Samples = global.Samples || (global.Samples = {});
+	var Color = global.Color;
+
+	Samples.utils = {
+		srand: function(seed) {
+			this._seed = seed;
+		},
+
+		rand: function(min, max) {
+			var seed = this._seed;
+			min = min === undefined ? 0 : min;
+			max = max === undefined ? 1 : max;
+			this._seed = (seed * 9301 + 49297) % 233280;
+			return min + (this._seed / 233280) * (max - min);
+		},
+
+		numbers: function(config) {
+			var cfg = config || {};
+			var min = cfg.min || 0;
+			var max = cfg.max || 1;
+			var from = cfg.from || [];
+			var count = cfg.count || 8;
+			var decimals = cfg.decimals || 8;
+			var continuity = cfg.continuity || 1;
+			var dfactor = Math.pow(10, decimals) || 0;
+			var data = [];
+			var i, value;
+
+			for (i = 0; i < count; ++i) {
+				value = (from[i] || 0) + this.rand(min, max);
+				if (this.rand() <= continuity) {
+					data.push(Math.round(dfactor * value) / dfactor);
+				} else {
+					data.push(null);
+				}
+			}
+
+			return data;
+		},
+
+		labels: function(config) {
+			var cfg = config || {};
+			var min = cfg.min || 0;
+			var max = cfg.max || 100;
+			var count = cfg.count || 8;
+			var step = (max - min) / count;
+			var decimals = cfg.decimals || 8;
+			var dfactor = Math.pow(10, decimals) || 0;
+			var prefix = cfg.prefix || '';
+			var values = [];
+			var i;
+
+			for (i = min; i < max; i += step) {
+				values.push(prefix + Math.round(dfactor * i) / dfactor);
+			}
+
+			return values;
+		},
+
+		//months: function(config) {
+		//	var cfg = config || {};
+		//	var count = cfg.count || 12;
+		//	var section = cfg.section;
+		//	var values = [];
+		//	var i, value;
+        //
+		//	for (i = 0; i < count; ++i) {
+		//		value = MONTHS[Math.ceil(i) % 12];
+		//		values.push(value.substring(0, section));
+		//	}
+        //
+		//	return values;
+		//},
+
+		color: function(index) {
+			return COLORS[index % COLORS.length];
+		},
+
+		transparentize: function(color, opacity) {
+			var alpha = opacity === undefined ? 0.5 : 1 - opacity;
+			return Color(color).alpha(alpha).rgbString();
+		}
+	};
+
+	// DEPRECATED
+	//window.randomScalingFactor = function() {
+	//	return Math.round(Samples.utils.rand(-100, 100));
+	//};
+
+	// INITIALIZATION
+	Samples.utils.srand(Date.now());
+}(this));
+    </script>
 </head>
 <body>
     <div class="app-container">
@@ -39,8 +156,139 @@
                     <li class="app-sidebar-link">Sign out</li>
                 </ul>
             </div>
-            <div class="app-outer"></div>
+            <div class="app-outer">
+                <div class="app-inner">
+                    <div class="row">
+                        <div class="widget-two-third"><div class="widget bg-dark"><div class="widget"><h1>Welcome to mantasec</h1><p><i>mantasec</i> is a vulnerability management platform which aims to assist users in tracking vulnerabilities in their system, streamlining remediation work, and demonstrating security return-on-investment to business leaders.</p></div></div></div>
+                        <div id="canvas-holder" class="widget-one-third">
+                            <canvas id="chart-area"></canvas>
+                        </div>
+                    </div>
+                    <div class="row">
+                            <div class="widget-one-third"><div class="widget bg-blue center-text white-text"><h3>6</h3>Low Impact</div></div>
+                            <div class="widget-one-third"><div class="widget bg-orange center-text white-text"><h3>1</h3>Medium Impact</div></div>
+                            <div class="widget-one-third"><div class="widget bg-red center-text white-text" center-text><h3>2</h3>High Impact</div></div>
+                        </div>
+                    <div class="row">
+                        <div class="widget-one"><div class="widget"><h3>Vulnerabilities</h3></div></div>
+                    </div>
+                    <div class="row">
+                        <div class="widget-one">
+                            <div class="widget vuln-high-widget">
+                                <h3 class="">SQL Injection</h3>
+                                <p class="vuln-desc">Description here</p>
+                                <p class="vuln-hosts"><b>Affected hosts:</b>10.1.1.1, 10.1.1.2, 10.1.1.3</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="widget-one">
+                            <div class="widget vuln-high-widget">
+                                <h3 class="">Arbitrary File Upload</h3>
+                                <p class="vuln-desc">Description here</p>
+                                <p class="vuln-hosts"><b>Affected hosts:</b>10.1.1.1, 10.1.1.2, 10.1.1.3</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="widget-one">
+                            <div class="widget vuln-medium-widget">
+                                <h3 class="">Cross-site Scripting</h3>
+                                <p class="vuln-desc">Description here</p>
+                                <p class="vuln-hosts"><b>Affected hosts:</b>10.1.1.1, 10.1.1.2, 10.1.1.3</p>
+                            </div>
+                        </div>
+                    </div>
+                                        <div class="row">
+                        <div class="widget-one">
+                            <div class="widget vuln-low-widget">
+                                <h3 class="">Information Disclosure: Server Header</h3>
+                                <p class="vuln-desc">Description here</p>
+                                <p class="vuln-hosts"><b>Affected hosts:</b>10.1.1.1, 10.1.1.2, 10.1.1.3</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="widget-one">
+                            <div class="widget vuln-low-widget">
+                                <h3 class="">Missing HTTP Security Headers</h3>
+                                <p class="vuln-desc">Description here</p>
+                                <p class="vuln-hosts"><b>Affected hosts:</b>10.1.1.1, 10.1.1.2, 10.1.1.3</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="widget-one">
+                            <div class="widget vuln-low-widget">
+                                <h3 class="">CAA Not Implemented</h3>
+                                <p class="vuln-desc">Description here</p>
+                                <p class="vuln-hosts"><b>Affected hosts:</b>10.1.1.1, 10.1.1.2, 10.1.1.3</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
         </div>
     </div>
+    <script>    
+            var config = {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [
+                            2,
+                            1,
+                            6,
+                        ],
+                        backgroundColor: [
+                            window.chartColors.red,
+                            window.chartColors.orange,
+                            window.chartColors.blue,
+                        ],
+                        label: 'Dataset 1'
+                    }],
+                    labels: [
+                        'High',
+                        'Medium',
+                        'Low'
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    legend: {
+                        display: false,
+                    },
+                    title: {
+                        display: true,
+                        text: 'Current Issues:'
+                    },
+                    animation: {
+                        animateScale: true,
+                        animateRotate: true
+                    }
+                }
+            };
+    
+            window.onload = function() {
+                var ctx = document.getElementById('chart-area').getContext('2d');
+                window.myDoughnut = new Chart(ctx, config);
+            };
+    
+            var colorNames = Object.keys(window.chartColors);
+    
+            document.getElementById('changeCircleSize').addEventListener('click', function() {
+                if (window.myDoughnut.options.circumference === Math.PI) {
+                    window.myDoughnut.options.circumference = 2 * Math.PI;
+                    window.myDoughnut.options.rotation = -Math.PI / 2;
+                } else {
+                    window.myDoughnut.options.circumference = Math.PI;
+                    window.myDoughnut.options.rotation = -Math.PI;
+                }
+    
+                window.myDoughnut.update();
+            });
+        </script>
 </body>
 </html>
