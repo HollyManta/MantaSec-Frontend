@@ -5,6 +5,13 @@
 h1, h2, h3, p {
     margin: 0;
 }
+h1 {
+    font-size: 1.5rem;
+}
+a {
+    color: inherit;
+    text-decoration: none;
+}
 body {
     margin: 0;
     padding: 0;
@@ -96,7 +103,7 @@ body {
 }
 .search-icon:hover {
     background-color: #0a7ab0;
-}.
+}
 .search-icon:focus {
     outline: none !important;
 }
@@ -128,7 +135,7 @@ body {
     display: -ms-flexbox;
     display: flex;
     z-index: 13;
-    top: 62px;
+    top: 60px;
     left: 0;
     border-right: 2px solid white;
     overflow: hidden;
@@ -228,34 +235,102 @@ body {
 .center-text {
     text-align: center;
 }
+.critical-text {
+    color: #93291E;
+}
+.high-text {
+    color: #fc6200;
+}
+.medium-text {
+    color: #fdc431;
+}
+.low-text {
+    color: #3fae49;
+}
+.info-text {
+    color: #0575E6;
+}
 .white-text {
     color: white;
 }
-.high-text {
-    color: #93291E;
-}
-.medium-text {
-    color: #fc6200;
-}
-.low-text {
-    color: #021B79;
-}
-.vuln-high-widget {
+.vuln-critical-widget {
     border: 1px solid #93291E;
 }
-.vuln-medium-widget {
+.vuln-high-widget {
     border: 1px solid #fc6200;
 }
+.vuln-medium-widget {
+    border: 1px solid #fdc431;
+}
 .vuln-low-widget {
+    border: 1px solid #3fae49;
+}
+.vuln-info-widget {
     border: 1px solid #0575E6;
 }
-
+.vuln-white-widget {
+    border: 1px solid #FFF;
+}
 .vuln-desc {
     padding-top: 5px;
     padding-bottom: 5px;
 }
 .vuln-hosts {
     font-size: 0.9rem;
+}
+.hover-highlight:hover {
+    border: 1px solid #0a7ab0;
+    background-color: #0a7ab0;
+    color: white;
+}
+.highlight-text {
+    color: #0a7ab0;
+}
+.padded-top-five {
+    padding-top: 5px;
+}
+.padded-top-ten {
+    padding-top: 10px;
+}
+.padded-top-twenty {
+    padding-top: 20px;
+}
+.inputfile {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+    border: 1px solid black;
+}
+.inputfile + label {
+    color: white;
+    border: 1px solid white;
+    border-radius: 5px;
+    max-width: 80%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    overflow: hidden;
+    padding: 0.625rem 1.25rem;
+}
+.upload-submit {
+    color: white;
+    border: 1px solid white;
+    background-color: inherit;
+    border-radius: 5px;
+    max-width: 80%;
+    font-size: 1.25rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.625rem 1.25rem;
+}
+.upload-submit:hover {
+    background-color: #0a7ab0;
+    border-color: #0a7ab0;
 }
 
 @media only screen and (max-width: 770px) {

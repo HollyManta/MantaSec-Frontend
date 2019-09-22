@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MantaSec - Vulnerability Management Platform</title>
+    <link href="/static/theme/css/main.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <a href="/">
+            <div class="app-header-logo">
+                <img class="app-header-logo-icon" src="/static/theme/images/MantaSecLogo-Outline-512.png" alt="User Image" />
+                mantasec
+            </div>
+            </a>
+            <div class="app-header-content">
+                {{ headercontent }}
+            </div>
+        </div>
+        <div class="app-navbar">
+            {{ navbar }}
+        </div>
+        <div class="app-main">
+            <div class="app-sidebar">
+                {{ sidebar }}
+            </div>
+            <div class="app-outer">
+                <div class="app-inner">
+                    <div class="row">
+                        <div class="widget-two-third">
+                            <div class="widget vuln-white-widget">
+                                <div class="widget">
+                                    <h1>Upload new File</h1>
+                                    <p class="padded-top-ten">Here you can upload files from common security scanners and we will process that information into our dashboard for you. There is no need to register, however if you would like to save your results for reference later then an account is required.</p>
+                                    <p class="padded-top-ten"><b>ALPHA BUILD:</b> This form currently only supports .nessus files</p>
+                                    <form class="padded-top-twenty" action="/upload" method=post enctype=multipart/form-data>
+                                        <input type="file" name="file[]" id="file" class="inputfile" data-multiple-caption="{count} files selected" multiple="">
+                                        <label for="file"><span>Select a file...</span></label>
+                                        <input type="submit" class="upload-submit">
+                                    </form>
+                                    <script>
+// TODO CSP will kill this
+// File upload adapted from Osvaldas Valutis' tutorial on styling file inputs: https://tympanus.net/codrops/2015/09/15/styling-customizing-file-inputs-smart-way/
+var inputs = document.querySelectorAll( '.inputfile' );
+Array.prototype.forEach.call( inputs, function( input )
+{
+    var label	 = input.nextElementSibling,
+        labelVal = label.innerHTML;
+
+    input.addEventListener( 'change', function( e )
+    {
+        var fileName = '';
+        if( this.files && this.files.length > 1 )
+            fileName = ( this.getAttribute( 'data-multiple-caption' ) || '' ).replace( '{count}', this.files.length );
+        else
+            fileName = e.target.value.split( '\\' ).pop();
+
+        if( fileName )
+            label.querySelector( 'span' ).innerHTML = fileName;
+        else
+            label.innerHTML = labelVal;
+    });
+});
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

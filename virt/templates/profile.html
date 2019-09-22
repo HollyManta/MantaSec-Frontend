@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MantaSec - Vulnerability Management Platform</title>
+    <link href="/static/theme/css/main.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <a href="/">
+            <div class="app-header-logo">
+                <img class="app-header-logo-icon" src="/static/theme/images/MantaSecLogo-Outline-512.png" alt="User Image" />
+                mantasec
+            </div>
+            </a>
+            <div class="app-header-content">
+                {{ headercontent }}
+            </div>
+        </div>
+        <div class="app-navbar">
+            {{ navbar }}
+        </div>
+        <div class="app-main">
+            <div class="app-sidebar">
+                {{ sidebar }}
+            </div>
+            <div class="app-outer">
+                <div class="app-inner">
+                    <div class="row">
+                        <div class="widget-one"><div class="widget"><h3>Scan Data</h3></div></div>
+                    </div>
+                    <div class="row">
+                        <div class="widget-one-third">
+                            <a href="#">
+                            <div class="widget vuln-white-widget hover-highlight">
+                                <p><b>+ Load New Scan File</b></p>
+                            </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="widget-one">
+                            <div class="widget vuln-white-widget">
+                                <h3 class="">Nessus Scan - f8amF.nessus</h3>
+                                <p class="vuln-desc">The description loaded from the Nessus file will go here.</p>
+                                <p class="vuln-hosts"><b>Scan Date:</b>2019-09-20 14:33 UTC</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="widget-one">
+                            <div class="widget vuln-white-widget">
+                                <h3 class="">Nessus Scan - a3efB.nessus</h3>
+                                <p class="vuln-desc">The description loaded from the Nessus file will go here.</p>
+                                <p class="vuln-hosts"><b>Scan Date:</b>2019-09-19 14:29 UTC</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
