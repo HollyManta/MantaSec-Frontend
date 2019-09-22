@@ -25,9 +25,10 @@
 #                <div class="app-header-content-right">Sign out</div>
 #                """
 
-headercontent = """<div class="app-header-content-right">Sign out</div>"""
+#headercontent = """<div class="app-header-content-right">Sign out</div>"""
+headercontent = ""
 
-# Social Links for Prod
+
 sidebar =    """<ul class="app-sidebar-links">
                     <li class="app-sidebar-link"><a href="https://twitter.com/MantaSecCom">Twitter</a></li>
                     <li class="app-sidebar-link"><a href="/upload">Upload Scan Data</a></li>
@@ -35,5 +36,14 @@ sidebar =    """<ul class="app-sidebar-links">
 
 navbar = """<ul class="app-navbar-links">
                 <li class="app-navbar-link"><a href="https://twitter.com/MantaSecCom">Twitter</a></li>
-                <li class="app-navbar-link"><a href="/upload">Upload Scan Data</a></li>
+                 <li class="app-navbar-link"><a href="/upload">Upload Scan Data</a></li>
             </ul>"""
+
+# Prod - social only
+#sidebar =    """<ul class="app-sidebar-links">
+#                    <li class="app-sidebar-link"><a href="https://twitter.com/MantaSecCom">Twitter</a></li>
+#                </ul>"""
+
+#navbar = """<ul class="app-navbar-links">
+#                <li class="app-navbar-link"><a href="https://twitter.com/MantaSecCom">Twitter</a></li>
+#            </ul>"""

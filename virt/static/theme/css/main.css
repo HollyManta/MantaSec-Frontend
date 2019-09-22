@@ -295,6 +295,10 @@ body {
 .padded-top-twenty {
     padding-top: 20px;
 }
+.center-div {
+    margin: 0 auto;
+}
+
 .inputfile {
     width: 0.1px;
     height: 0.1px;
