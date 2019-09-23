@@ -274,6 +274,7 @@ body {
 .vuln-desc {
     padding-top: 5px;
     padding-bottom: 5px;
+    font-size: 0.9rem;
 }
 .vuln-hosts {
     font-size: 0.9rem;
@@ -297,6 +298,29 @@ body {
 }
 .center-div {
     margin: 0 auto;
+}
+.login-input {
+    border: 1px solid white;
+    border-radius: 5px;
+    background-color: inherit;
+    display: block;
+    padding: 20px;
+    color: white;
+    font-size: 1.2rem;
+    width: 350px;
+}
+.login-button {
+    border: 1px solid white;
+    border-radius: 5px;
+    background-color: inherit;
+    display: block;
+    padding: 20px;
+    color: white;
+    font-size: 1.2rem;
+}
+.login-button:hover {
+    background-color: #0a7ab0;
+    border-color: #0a7ab0;
 }
 
 .inputfile {

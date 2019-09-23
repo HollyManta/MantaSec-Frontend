@@ -1,12 +1,52 @@
-from flask import Flask, request, render_template, Markup, make_response
-
+from flask import Flask, request, render_template, Markup, make_response, redirect
 import os
+import MySQLdb
+import bcrypt
+import re
+
 import template_parts
 import security_headers
 import parser_nessus
 import vulnerability_handling
+import aggregator
+
 
 application = Flask(__name__)
+
+   
+DATABASE = {
+    'NAME': os.environ['RDS_DB_NAME'],
+    'USER': os.environ['RDS_USERNAME'],
+    'PASSWORD': os.environ['RDS_PASSWORD'],
+    'HOST': os.environ['RDS_HOSTNAME'],
+    'PORT': int(os.environ['RDS_PORT'])
+}
+
+# Connect without DB incase we're a fresh instance and need to initiate
+db = MySQLdb.connect(   host=DATABASE["HOST"],
+                        user=DATABASE["USER"],
+                        passwd=DATABASE["PASSWORD"],
+                        port=DATABASE["PORT"]
+                    )
+
+cur = db.cursor()
+cur.execute("DROP DATABASE frontend")
+cur.execute("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'frontend'")
+if len(cur.fetchall()) == 0:
+    print("No database")
+    cur.execute("CREATE DATABASE frontend")
+    cur.execute("use frontend")
+    cur.execute("CREATE TABLE users (email VARCHAR(256), hash VARCHAR(64), firstName VARCHAR(256), lastName VARCHAR(256))")
+else:
+    cur.execute("USE frontend")
+
+#password = b"test password here"
+#hashed = bcrypt.hashpw(password, bcrypt.gensalt())
+
+#if bcrypt.checkpw(password, hashed):
+#    print("It Matches!")
+#else:
+#    print("It Does not Match :(")
 
 # Set up the template parts
 sidebar = Markup(template_parts.sidebar)
@@ -20,6 +60,11 @@ def show_index():
     response = make_response(renderedTemplate)
     response = security_headers.add(response)
     return response
+
+@application.route('/db-create')
+def show_db():
+    output = "DB Status: " + DATABASE["NAME"]
+    return output
 
 @application.route('/upload', methods=['GET','POST'])
 def show_upload(): 
@@ -36,6 +81,7 @@ def show_upload():
             else:
                 print("Unsupported file type") 
                    
+        vulns = aggregator.aggregate(vulns)
         vulnlist = vulnerability_handling.orderVulns(vulns)
         vulnlist = Markup(vulnlist)
 
@@ -49,6 +95,62 @@ def show_upload():
     response = security_headers.add(response)
     return response
     
+@application.route('/login')
+def show_login():
+    renderedTemplate = render_template("login.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent)
+    response = make_response(renderedTemplate)
+    response = security_headers.add(response)
+    return response
+
+@application.route('/register', methods=['GET','POST'])
+def show_register(): 
+    if request.method == 'POST':
+        # Process registration here
+        # Check that we received each parameter (email, password, confirm)
+        paramList = request.form.to_dict().keys()
+        if not ("email" in paramList and "password" in paramList and "confirm" in paramList):
+            registrationErrors = "Error: Missing parameter!"
+            renderedTemplate = render_template("register.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent, registrationErrors = registrationErrors)
+            response = make_response(renderedTemplate)
+            response = security_headers.add(response)
+
+        email = request.form.get('email')
+        password = request.form.get('password')
+        confirm = request.form.get('confirm')
+        
+        #Check if password and confirm match
+        if (confirm != password):
+            registrationErrors = "Error: Invalid email address!"
+            renderedTemplate = render_template("register.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent, registrationErrors = registrationErrors)
+            response = make_response(renderedTemplate)
+            response = security_headers.add(response)
+
+        #Check password complexity
+
+        # Check the email address is valid
+        regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
+        if not (re.search(regex,email)): 
+            registrationErrors = "Error: Invalid email address!"
+            renderedTemplate = render_template("register.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent, registrationErrors = registrationErrors)
+            response = make_response(renderedTemplate)
+            response = security_headers.add(response)
+        
+        # Check the email is not in use
+        
+
+        # If registration fails then contnue to load the template with the original email address
+        #return redirect("/profile", code=302)
+    renderedTemplate = render_template("register.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent)
+    response = make_response(renderedTemplate)
+    response = security_headers.add(response)
+    return response
+
+@application.route('/profile')
+def show_profile():
+    renderedTemplate = render_template("profile.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent)
+    response = make_response(renderedTemplate)
+    response = security_headers.add(response)
+    return response
 
 #@application.route('/dashboard')
 #def show_dashboard():
@@ -101,13 +203,6 @@ def show_upload():
 #@application.route('/search')
 #def show_search():
 #    renderedTemplate = render_template("search.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent)
-#    response = make_response(renderedTemplate)
-#    response = security_headers.add(response)
-#    return response
-
-#@application.route('/profile')
-#def show_profile():
-#    renderedTemplate = render_template("profile.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent)
 #    response = make_response(renderedTemplate)
 #    response = security_headers.add(response)
 #    return response

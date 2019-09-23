@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MantaSec - Vulnerability Management Platform</title>
+    <link href="/static/theme/css/main.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+</head>
+<body>
+    <div class="app-container">
+        <div class="app-header">
+            <a href="/">
+            <div class="app-header-logo">
+                <img class="app-header-logo-icon" src="/static/theme/images/MantaSecLogo-Outline-512.png" alt="User Image" />
+                mantasec
+            </div>
+            </a>
+            <div class="app-header-content">
+                {{ headercontent }}
+            </div>
+        </div>
+        <div class="app-navbar">
+            {{ navbar }}
+        </div>
+        <div class="app-main">
+            <div class="app-sidebar">
+                {{ sidebar }}
+            </div>
+            <div class="app-outer">
+                <div class="app-inner">
+                    <div class="row">
+                        <div class="widget-one">
+                            <div class="widget">
+                                <h3>Register</h3>
+                                <p class="padded-top-five">Fill in the below form to register an account. Registration allows access to more features of the platform and allows you to save vulnerablity data for later.</p>
+                                <p class="padded-top-five red-text">{{ registrationErrors }}</p>
+                                <form method="POST" action="/register" class="padded-top-twenty">
+                                    <input class="login-input" type="text" name="email" placeholder="Email Address" />
+                                    <input class="login-input" type="password" name="password" placeholder="Password" />
+                                    <input class="login-input" type="password" name="confirm" placeholder="Confirm Password" />
+                                    <input class="login-button" type="submit" value="Login" />
+                                    <p class="padded-top-ten"><a href="#">Already have an account?</a></p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

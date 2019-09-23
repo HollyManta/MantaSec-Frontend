@@ -29,21 +29,27 @@
 headercontent = ""
 
 
-sidebar =    """<ul class="app-sidebar-links">
-                    <li class="app-sidebar-link"><a href="https://twitter.com/MantaSecCom">Twitter</a></li>
-                    <li class="app-sidebar-link"><a href="/upload">Upload Scan Data</a></li>
-                </ul>"""
-
-navbar = """<ul class="app-navbar-links">
-                <li class="app-navbar-link"><a href="https://twitter.com/MantaSecCom">Twitter</a></li>
-                 <li class="app-navbar-link"><a href="/upload">Upload Scan Data</a></li>
-            </ul>"""
-
-# Prod - social only
 #sidebar =    """<ul class="app-sidebar-links">
 #                    <li class="app-sidebar-link"><a href="https://twitter.com/MantaSecCom">Twitter</a></li>
+#                    <li class="app-sidebar-link"><a href="/upload">Upload Scan Data</a></li>
+#                    <li class="app-sidebar-link"><a href="/register">Register</a></li>
+#                    <li class="app-sidebar-link"><a href="/login">Login</a></li>
 #                </ul>"""
 
 #navbar = """<ul class="app-navbar-links">
-#                <li class="app-navbar-link"><a href="https://twitter.com/MantaSecCom">Twitter</a></li>
+#               <li class="app-navbar-link"><a href="https://twitter.com/MantaSecCom">Twitter</a></li>
+#               <li class="app-navbar-link"><a href="/upload">Upload Scan Data</a></li>
+#               <li class="app-navbar-link"><a href="/register">Register</a></li>
+#               <li class="app-navbar-link"><a href="/login">Login</a></li>
 #            </ul>"""
+
+# Prod - social only
+sidebar = """<ul class="app-sidebar-links">
+                 <li class="app-sidebar-link"><a href="https://twitter.com/MantaSecCom">Twitter</a></li>
+                 <li class="app-sidebar-link"><a href="/upload">Upload Scan Data</a></li>
+             </ul>"""
+
+navbar = """<ul class="app-navbar-links">
+               <li class="app-navbar-link"><a href="https://twitter.com/MantaSecCom">Twitter</a></li>
+               <li class="app-navbar-link"><a href="/register">Register</a></li>
+            </ul>"""

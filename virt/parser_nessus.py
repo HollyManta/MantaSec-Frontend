@@ -38,13 +38,13 @@ def parse(nessusData):
             for item in host:
                 if item.tag == "ReportItem": # This skips HostProperties
                     vulnName    = item.find('plugin_name').text
+                    description = item.find('description').text
                     vulnPort    = item.attrib['port']
                     riskRating  = item.find('risk_factor').text
                     hostPost = currentHost + ":" + vulnPort
 
                     if not any(d['name'] == vulnName for d in vulnerabilities):    
-                        vulnerabilities.append( {"name" : vulnName, "affected" : [ hostPost], "risk" : riskRating } )    # TODO - can we use JSON directly instead of this?
-                                                                                                        # TODO - need to incorporate Host:Port mappings
+                        vulnerabilities.append( {"name" : vulnName, "affected" : [ hostPost], "description" : description, "risk" : riskRating } )    # TODO - can we use JSON directly instead of this?
                     else:
                         for vuln in vulnerabilities:
                             if vuln["name"] == vulnName:
@@ -59,7 +59,7 @@ def merge(vulnlist, nessusData):
 
     for vuln in newVulns:
         if not any(d['name'] == vuln["name"] for d in vulnlist):
-            vulnlist.append( {"name" : vuln["name"], "affected" : vuln["affected"], "risk" : vuln["risk"] } )    # TODO - can we use JSON directly instead of this?
+            vulnlist.append( {"name" : vuln["name"], "affected" : vuln["affected"], "description" : "", "risk" : vuln["risk"] } )    # TODO - can we use JSON directly instead of this?
         else:
             for oldvuln in vulnlist:
                 if oldvuln["name"] == vuln["name"]:
