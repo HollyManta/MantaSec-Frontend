@@ -1,44 +1,23 @@
+## Pip installed or default modules
 from flask import Flask, request, render_template, Markup, make_response, redirect
 import os
 import MySQLdb
 import bcrypt
 import re
 
+## Custom modules
 import template_parts
 import security_headers
+import db_functions
+import security_functions
 import parser_nessus
 import vulnerability_handling
 import aggregator
 
-
+## Set up the app, "application" is expected by Elastic Beanstalk
 application = Flask(__name__)
 
-   
-DATABASE = {
-    'NAME': os.environ['RDS_DB_NAME'],
-    'USER': os.environ['RDS_USERNAME'],
-    'PASSWORD': os.environ['RDS_PASSWORD'],
-    'HOST': os.environ['RDS_HOSTNAME'],
-    'PORT': int(os.environ['RDS_PORT'])
-}
-
-# Connect without DB incase we're a fresh instance and need to initiate
-db = MySQLdb.connect(   host=DATABASE["HOST"],
-                        user=DATABASE["USER"],
-                        passwd=DATABASE["PASSWORD"],
-                        port=DATABASE["PORT"]
-                    )
-
-cur = db.cursor()
-cur.execute("DROP DATABASE frontend")
-cur.execute("SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SCHEMA_NAME = 'frontend'")
-if len(cur.fetchall()) == 0:
-    print("No database")
-    cur.execute("CREATE DATABASE frontend")
-    cur.execute("use frontend")
-    cur.execute("CREATE TABLE users (email VARCHAR(256), hash VARCHAR(64), firstName VARCHAR(256), lastName VARCHAR(256))")
-else:
-    cur.execute("USE frontend")
+db_functions.init()
 
 #password = b"test password here"
 #hashed = bcrypt.hashpw(password, bcrypt.gensalt())
@@ -53,6 +32,7 @@ sidebar = Markup(template_parts.sidebar)
 navbar = Markup(template_parts.navbar)
 headercontent = Markup(template_parts.headercontent)
 
+
 @application.route('/')
 @application.route('/index')
 def show_index():
@@ -61,10 +41,6 @@ def show_index():
     response = security_headers.add(response)
     return response
 
-@application.route('/db-create')
-def show_db():
-    output = "DB Status: " + DATABASE["NAME"]
-    return output
 
 @application.route('/upload', methods=['GET','POST'])
 def show_upload(): 
@@ -73,7 +49,8 @@ def show_upload():
         vulns = []
         for file in files:
             inputData = file.read()
-            if parser_nessus.check(inputData) == 0:
+            ## TODO - fix the return values for .check() to allow error handling
+            if parser_nessus.check(inputData) > 0:
                 if len(vulns) == 0:
                     vulns = parser_nessus.parse(inputData)  # First file we can parse, so we're starting fresh
                 else:
@@ -95,6 +72,7 @@ def show_upload():
     response = security_headers.add(response)
     return response
     
+
 @application.route('/login')
 def show_login():
     renderedTemplate = render_template("login.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent)
@@ -102,11 +80,13 @@ def show_login():
     response = security_headers.add(response)
     return response
 
+
+## Display the registration form (GET) or process a registration (POST)
 @application.route('/register', methods=['GET','POST'])
 def show_register(): 
+    ## Process a registration
     if request.method == 'POST':
-        # Process registration here
-        # Check that we received each parameter (email, password, confirm)
+        ## Check that we received each parameter (email, password, confirm)
         paramList = request.form.to_dict().keys()
         if not ("email" in paramList and "password" in paramList and "confirm" in paramList):
             registrationErrors = "Error: Missing parameter!"
@@ -114,20 +94,26 @@ def show_register():
             response = make_response(renderedTemplate)
             response = security_headers.add(response)
 
+        ## We have all the post variables so shorted them
         email = request.form.get('email')
         password = request.form.get('password')
         confirm = request.form.get('confirm')
         
-        #Check if password and confirm match
+        ## Check if password and confirm match
         if (confirm != password):
             registrationErrors = "Error: Invalid email address!"
             renderedTemplate = render_template("register.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent, registrationErrors = registrationErrors)
             response = make_response(renderedTemplate)
             response = security_headers.add(response)
 
-        #Check password complexity
+        ## TODO - Check password complexity
+        if (not security_functions.passStrongEnough(password)):
+            registrationErrors = "Error: Password not strong enough!"
+            renderedTemplate = render_template("register.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent, registrationErrors = registrationErrors)
+            response = make_response(renderedTemplate)
+            response = security_headers.add(response)
 
-        # Check the email address is valid
+        ## Check the email address is valid
         regex = '^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$'
         if not (re.search(regex,email)): 
             registrationErrors = "Error: Invalid email address!"
@@ -135,9 +121,8 @@ def show_register():
             response = make_response(renderedTemplate)
             response = security_headers.add(response)
         
-        # Check the email is not in use
+        ## TODO - Check the email is not in use
         
-
         # If registration fails then contnue to load the template with the original email address
         #return redirect("/profile", code=302)
     renderedTemplate = render_template("register.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent)
@@ -145,76 +130,13 @@ def show_register():
     response = security_headers.add(response)
     return response
 
-@application.route('/profile')
-def show_profile():
-    renderedTemplate = render_template("profile.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent)
-    response = make_response(renderedTemplate)
-    response = security_headers.add(response)
-    return response
 
-#@application.route('/dashboard')
-#def show_dashboard():
-#    renderedTemplate = render_template("dashboard.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent)
-#    response = make_response(renderedTemplate)
-#    response = security_headers.add(response)
-#    return response
+@application.route('/sign-out')
+def show_signout():
+    ## TODO - Do a sign out here
+    ## TODO -  Redirect to index
+    return redirect("/", code=302)
 
-#@application.route('/vulns')
-#def show_vulns():
-    ## TODO DRAGONS
-    ## This code may be vulnerable to template injection
-    ## This is also likely vulnerable to cross-site scripting
-#    vulns = [   
-#                ['SQL Injection', 'high', 'Description here', '10.1.1.1, 10.1.1.1'],
-#                ['Arbitrary File Upload', 'high',  'Another description', '10.1.1.2, 10.1.1.3'],
-#                ['Cross-site Scripting', 'medium', 'Data here', '10.1.1.4'],
-#                ['Information Disclosure: Server Header','low', 'An explanation', '10.1.1.6'],
-#                ['Missing HTTP Security Headers', 'low', 'Please explain', '10.1.1.2'],
-#                ['CAA Not Implemented', 'low', 'Info for you', '10.1.1.6']
-#            ]
-    
-#    vulnlist = ""
-
-#    for vuln in vulns:
-#        vulnlist = vulnlist + '<div class="row">'
-#        vulnlist = vulnlist + '<div class="widget-one">'
-#        vulnlist = vulnlist + '<div class="widget vuln-' + vuln[1] + '-widget">'
-#        vulnlist = vulnlist + '<h3 class="">' + vuln[0] + '</h3>'
-#        vulnlist = vulnlist + '<p class="vuln-desc">' + vuln[2] + '</p>'
-#        vulnlist = vulnlist + '<p class="vuln-hosts"><b>Affected hosts:</b> ' + vuln[3] + '</p>'
-#        vulnlist = vulnlist + '</div>'
-#        vulnlist = vulnlist + '</div>'
-#        vulnlist = vulnlist + '</div>'
-
-#    vulnlist = Markup(vulnlist)
-
-#    renderedTemplate = render_template("vulns.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent, vulnlist = vulnlist)
-#    response = make_response(renderedTemplate)
-#    response = security_headers.add(response)
-#    return response
-
-#@application.route('/scans')
-#def show_scans():
-#    renderedTemplate = render_template("scans.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent)
-#    response = make_response(renderedTemplate)
-#    response = security_headers.add(response)
-#    return response
-
-#@application.route('/search')
-#def show_search():
-#    renderedTemplate = render_template("search.html", sidebar = sidebar, navbar = navbar, headercontent = headercontent)
-#    response = make_response(renderedTemplate)
-#    response = security_headers.add(response)
-#    return response
-
-#@application.route('/sign-out')
-#def show_signout():
-#    # Do a sign out here
-#    # Redirect to index
-#    response = make_response()
-#    response.headers.set('Location: /')
-#    response = security_headers.add(response)
-#    return response
 
 if __name__ == "__main__":
     application.run()

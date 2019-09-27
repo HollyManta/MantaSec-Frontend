@@ -1,3 +1,4 @@
+## TODO - what does the function do and what are the expected inputs?
 def add(response):
     response.headers.set('Strict-Transport-Security','max-age=2592000; includeSubDomains')
     response.headers.set('X-Frame-Options','DENY')

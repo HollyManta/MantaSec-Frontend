@@ -131,7 +131,7 @@ body {
     color: #A7AEB8;
     position: fixed;
     height: 100vh;
-    width: 280px;
+    width: 280px; 
     display: -ms-flexbox;
     display: flex;
     z-index: 13;
@@ -150,10 +150,12 @@ body {
     padding: 2px;
     width: 180px;
 }
+/*
 .app-sidebar-link:hover {
     background-color: #0a7ab0;
     color: white;
 }
+*/
 .app-outer {
     color: #A7AEB8;
     background-color: #1C2431;
@@ -174,7 +176,6 @@ body {
     padding: 62px 30px 0;
 }
 .row {
-    padding-top: 20px;
     display: flex;
     flex-wrap: wrap;
     margin-right: -15px;
@@ -230,13 +231,13 @@ body {
     background-image: linear-gradient(to top, #fe8c00 0%, #f83600 100%)
 }
 .bg-red {
-    background-image: linear-gradient(to top, #ED213A 0%, #93291E 100%)
+    background-image: linear-gradient(to top, #ED213A 0%, #c00000 100%)
 }
 .center-text {
     text-align: center;
 }
 .critical-text {
-    color: #93291E;
+    color: #c00000;
 }
 .high-text {
     color: #fc6200;
@@ -253,8 +254,35 @@ body {
 .white-text {
     color: white;
 }
+.bg-critical {
+    background-color: #c00000;
+}
+.bg-high {
+    background-color: #fc6200;
+}
+.bg-medium {
+    background-color: #fdc431;
+}
+.bg-low {
+    background-color: #3fae49;
+}
+.bg-info {
+    background-color: #0575E6;
+}
+.bg-white {
+    background-color: white;
+}
+.vuln-summary {
+    width: 180px;
+    display: inline-block;
+    padding: 5px;
+    text-align: center;
+}
+.vuln-button {
+    width: 180px;
+}
 .vuln-critical-widget {
-    border: 1px solid #93291E;
+    border: 1px solid #c00000;
 }
 .vuln-high-widget {
     border: 1px solid #fc6200;
@@ -271,9 +299,13 @@ body {
 .vuln-white-widget {
     border: 1px solid #FFF;
 }
+.vuln-none-widget {
+    border: 0px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
 .vuln-desc {
     padding-top: 5px;
-    padding-bottom: 5px;
     font-size: 0.9rem;
 }
 .vuln-hosts {
@@ -295,6 +327,9 @@ body {
 }
 .padded-top-twenty {
     padding-top: 20px;
+}
+.inline-block {
+    display: inline-block;
 }
 .center-div {
     margin: 0 auto;
@@ -388,10 +423,12 @@ body {
     .app-navbar-link {
         padding: 5px 20px 5px 20px;
     }
+    /*
     .app-navbar-link:hover {
         background-color: #0a7ab0;
         color: white;
     }
+    */
     .app-inner {
         padding: 30px 30px 0;
     }

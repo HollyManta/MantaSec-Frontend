@@ -1,5 +1,6 @@
 from xml.etree import ElementTree as ET
 
+## TODO - what does the function do and what are the expected inputs?
 def check(nessusData):
     try:
         root = ET.fromstring(nessusData)
@@ -17,14 +18,15 @@ def check(nessusData):
         print("Error: Could not parse policy/report content.'") # Somehow log this?
         return -4
 
-    return 0
+    return True
 
+## TODO - what does the function do and what are the expected inputs?
 def parse(nessusData):
     vulnerabilities = []
 
     # Check that we have a valid XML file
     error = check(nessusData)
-    if error != 0:
+    if error < 0:
         return error
         
     root = ET.fromstring(nessusData)
@@ -37,6 +39,7 @@ def parse(nessusData):
             currentHost = host.attrib['name']
             for item in host:
                 if item.tag == "ReportItem": # This skips HostProperties
+                    pluginID = "nessus_" + item.attrib['pluginID']
                     vulnName    = item.find('plugin_name').text
                     description = item.find('description').text
                     vulnPort    = item.attrib['port']
@@ -44,7 +47,7 @@ def parse(nessusData):
                     hostPost = currentHost + ":" + vulnPort
 
                     if not any(d['name'] == vulnName for d in vulnerabilities):    
-                        vulnerabilities.append( {"name" : vulnName, "affected" : [ hostPost], "description" : description, "risk" : riskRating } )    # TODO - can we use JSON directly instead of this?
+                        vulnerabilities.append( {"name" : vulnName, "affected" : [ hostPost], "description" : description, "risk" : riskRating, "plugin" : pluginID } )    # TODO - can we use JSON directly instead of this?
                     else:
                         for vuln in vulnerabilities:
                             if vuln["name"] == vulnName:
@@ -53,13 +56,15 @@ def parse(nessusData):
 
     return vulnerabilities
 
+## TODO - what does the function do and what are the expected inputs?
 def merge(vulnlist, nessusData):
-    # TODO refactor this "newvulns" and "oldvulns" makes it difficult to follow the code
+    ## TODO refactor this "newvulns" and "oldvulns" makes it difficult to follow the code
     newVulns = parse(nessusData)
 
     for vuln in newVulns:
         if not any(d['name'] == vuln["name"] for d in vulnlist):
-            vulnlist.append( {"name" : vuln["name"], "affected" : vuln["affected"], "description" : "", "risk" : vuln["risk"] } )    # TODO - can we use JSON directly instead of this?
+            ## TODO - remove plugin description and load it from the DB
+            vulnlist.append( {"name" : vuln["name"], "affected" : vuln["affected"], "description" : "", "risk" : vuln["risk"], "plugin" : vuln["plugin"] } )    # TODO - can we use JSON directly instead of this?
         else:
             for oldvuln in vulnlist:
                 if oldvuln["name"] == vuln["name"]:
@@ -72,15 +77,19 @@ def merge(vulnlist, nessusData):
 
 
 if __name__ == "__main__":
-    with open('C:\\Users\\Holly\\Downloads\\LocalScan-172-20-10_o0iv5u.nessus','r') as inputFile:
-        content = inputFile.read()
+    ## TODO - implement args to load a nessus file and test the parser
+    ## TODO - implement args to load two nessus files and test the merger
+    import argparse
 
-    data = parse(content)
-    if isinstance(data, int):
-        print("Fatal error occured.")
-    else:
-        print(data)
-
+    parser = argparse.ArgumentParser()
+    parser.add_argument("inputFile", help="A Nessus file to parse")
+    args = parser.parse_args()
     
+    with open(args.inputFile,'r') as inputFile:
+        inputData = inputFile.read()
 
-            
+    if (check(inputData) > 0):
+        parsed = parse(inputData)
+        print(parsed)
+    else:
+        print("Error: not a nessus file :(")
